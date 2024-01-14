@@ -1,0 +1,121 @@
+---
+header-includes: \usepackage{bbm}
+title: ""
+output: html_document
+number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<center>
+## BIOS522: Survival Analysis Methods
+## *Activity 3: R Practice Session*
+</center>
+<br />
+
+*In this session, you will practice implementing basic analyses in `R`. You will use `R markdown` to document your code and results. `R` chunks are provided for your code, and space is provided for your interpretations.*
+
+<br />
+
+For this and other `R` practice sessions, we will use the data set `whas500`. This data set includes data extracted from the Worcester Heart Attack Study (WHAS). The study is described in Hosmer, Lemeshow and May (2013). The purpose of the study is to study factors and time trends associated with long-term survival following acute myocardial infarction. The main data set has information on more than 11,000 admissions. The data in `whas500` were sampled by taking an approximately 23% random sample from cohorts collected in 1997, 1999, and 2001, yielding 500 subjects.
+
+The file `whas500.Rdata` includes the data. The file `whas500.txt` summarizes the variables.
+
+**1. Use the code chunk below to load the `survival` package, load the `whas500` data set (if you aren't sure how, figuring it out is good practice!), and inspect its variables. Refer to the documentation to review the meaning of each variable.**
+
+```{r}
+# ADD YOUR CODE HERE
+
+```
+
+
+**2. How is `lenfol` calculated? What is the time origin?**
+
+<!--- Add your answer below -->
+
+
+
+**3. Plot a Kaplan-Meier curve for survival after acute myocardial infarction. Use the entire dataset. Plot the curve with complementary log-log confidence intervals. Make sure the plot has proper labels.**
+
+```{r}
+# ADD YOUR CODE HERE
+
+```
+
+**4. Comment on the shape of the survival curve. How does survival change over time? What happens to the standard errors over time?**
+
+<!--- Add your answer below -->
+
+
+
+**5. Calculate the estimated survival at 1 and 2 years. Report point estimates and 95% complementary log-log confidence intervals.**
+
+```{r}
+# ADD YOUR CODE HERE
+
+```
+
+<!--- Write out your answer below in complete sentence(s) -->
+
+
+**6. If possible, calculate median survival and an accompanying 95% confidence interval. Include units.**
+
+```{r}
+# ADD YOUR CODE HERE
+
+```
+
+<!--- Write out your answer below in complete sentence(s) -->
+
+
+
+**7. Whether the patient required atrial fibrillation during the acute myocardial infarction is a potentially important predictor of survival. Plot separate Kaplan-Meier curves by atrial fibrillation status. Include a legend. Comment on any observable differences.**
+
+```{r}
+# ADD YOUR CODE HERE
+
+```
+
+<!--- Write out your answer below in complete sentence(s) -->
+
+
+**8. Calculate a log-rank test statistic to test the statistical significance of the difference in survival between patients with atrial fibrillation and with no atrial fibrillation.**
+
+```{r}
+# ADD YOUR CODE HERE
+
+```
+
+<!--- Write out your answer below in complete sentence(s) -->
+
+
+**9. Patients were enrolled from three different cohort years - 1997, 1999, and 2001. Plot separate Kaplan-Meier curves by cohort. Include a legend. Comment on any observable differences.**
+
+```{r}
+# ADD YOUR CODE HERE
+
+```
+
+<!--- Write out your answer below in complete sentence(s) -->
+
+
+**10. Recalculate the log-rank test for atrial fibrillation, adjusting for cohort.**
+
+```{r}
+# ADD YOUR CODE HERE
+
+```
+
+<!--- Write out your answer below in complete sentence(s) -->
+
+
+
+**11. Imagine that we wanted to adjust our atrial fibrillation comparison for both cohort year and patient age at hospital admission. Describe how we might achieve this...**
+
+<!--- Write out your answer below in complete sentence(s) -->
+
+
+#### *End of practice session*
+

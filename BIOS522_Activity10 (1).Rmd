@@ -1,0 +1,70 @@
+---
+header-includes: \usepackage{bbm}
+title: ""
+output: html_document
+number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<center>
+## BIOS522: Survival Analysis Methods
+## *Week 10: R Practice Session*
+</center>
+<br />
+
+*In this session, you will practice implementing analyses in `R`. You will use `R markdown` to document your code and results. `R` chunks are provided for your code, and space is provided for your interpretations.*
+
+<br />
+
+For this `R` practice session, we will use the data set `whas500`. This data set includes data extracted from the Worcester Heart Attack Study (WHAS). The study is described in Hosmer, Lemeshow and May (2013). The purpose of the study is to study factors and time trends associated with long-term survival following acute myocardial infarction. The main data set has information on more than 11,000 admissions. The data in `whas500` were sampled by taking an approximately 23% random sample from cohorts collected in 1997, 1999, and 2001, yielding 500 subjects.
+
+The file `whas500.Rdata` includes the data. The file `whas500.txt` summarizes the variables.
+
+The aim of this session is to practice fitting accelerated failure time models in `R`.
+
+**1. Fit a Weibull accelerated failure time model with the single predictor of atrial fibrillation. Report the acceleration factor. Write an accompanying sentence to interpret the acceleration factor, being clear about the direction of the effect (which group has longer survival if a difference in observed).**
+
+```{r}
+# ADD YOUR CODE HERE
+
+# start by reading in the survival package and the data
+```
+
+<!--- Add your interpretation below -->
+
+**2. Fit a Cox proportional hazards model with the single predictor of atrial fibrillation. Compare the hazard ratio from this model with the acceleration factor from the previous model. Do they provide the same conclusions?**
+
+```{r}
+# ADD YOUR CODE HERE
+```
+
+<!--- Add your interpretation below -->
+
+**3. Examining the fit of the Weibull accelerated failure time model, report the Weibull shape parameter. Describe the shape of the hazard function (decreasing, constant, concave increasing, or convex increasing).**
+
+```{r}
+# ADD YOUR CODE HERE
+```
+
+<!--- Add your interpretation below -->
+
+**4. Report the Weibull rate parameter for the reference group. Include units. Recall that failure times are measured in days in this data set.**
+
+```{r}
+# ADD YOUR CODE HERE
+```
+
+<!--- Add your answer below -->
+
+**5. Estimate median survival for patients with and without atrial fibrillation.**
+
+```{r}
+# ADD YOUR CODE HERE
+```
+<!--- Add your answer below -->
+
+#### *End of practice session*
+
