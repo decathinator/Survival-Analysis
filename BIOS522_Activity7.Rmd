@@ -1,0 +1,199 @@
+---
+header-includes: \usepackage{bbm}
+title: ""
+output: html_document
+number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<center>
+## BIOS522: Survival Analysis Methods
+## *Week 7: R Practice Session*
+</center>
+<br />
+
+*In this session, you will practice implementing analyses in `R`. You will use `R markdown` to document your code and results. `R` chunks are provided for your code, and space is provided for your interpretations.*
+
+<br />
+
+For this `R` practice session, we will use the data set `whas500`. This data set includes data extracted from the Worcester Heart Attack Study (WHAS). The study is described in Hosmer, Lemeshow and May (2013). The purpose of the study is to study factors and time trends associated with long-term survival following acute myocardial infarction. The main data set has information on more than 11,000 admissions. The data in `whas500` were sampled by taking an approximately 23% random sample from cohorts collected in 1997, 1999, and 2001, yielding 500 subjects.
+
+The file `whas500.Rdata` includes the data. The file `whas500.txt` summarizes the variables.
+
+The aim of this session is to practice fitting a Cox model to predict time from hospital admission for a myocardial infarction to death. The main learning objectives are for you to use the tools you have learned to practice: (a) estimating hazard ratios and 95% confidence intervals, (b) hypothesis testing to make decisions about covariates and models, (c) using residuals to assess the functional form of covariates, (d) assessing the proportional hazards assumption, and (e) testing for interactions. We will follow the structure of *Purposeful Selection* as described by Hosmer, Lemeshow and May (2008).
+
+Though this activity will not be graded, you will summarize your results and submit these as part of your upcoming homework assignment.
+
+```{r}
+library(dplyr)
+library(tidyverse)
+library(survival)
+
+load("C:/Users/Cathy/Downloads/whas500.RData")
+```
+
+
+**Step 1. Fit univariable models for all covariates and screen for significant covariates.**
+
+```{r}
+# Function for cox models
+coxph_custom <- function(variable_name) {
+  formula <- as.formula(paste("Surv(lenfol, fstat) ~", variable_name))
+  result <- coxph(formula, data = whas500)
+  return(result)
+}
+
+# Making KM plots
+km_custom <- function(variable_name) {
+  formula <- as.formula(paste("Surv(lenfol, fstat) ~", variable_name))
+  km_fit <- survfit(formula, data = whas500)
+  
+  # Plot the Kaplan-Meier survival curve
+  plot_title <- paste("Survival with", variable_name)
+  plot(km_fit, xlab = "Length of Follow-Up (Days)", ylab = "Survival probability", main = plot_title)
+}
+
+# commends indicate significant or not
+coxph_custom("age") # Yes
+coxph_custom("gender") # Yes
+coxph_custom("hr") # Yes
+coxph_custom("sysbp") # Yes
+coxph_custom("diasbp") # Yes
+coxph_custom("bmi") # Yes
+coxph_custom("cvd") # No
+coxph_custom("afb") # Yes
+coxph_custom("sho") # Yes
+coxph_custom("chf") # Yes
+coxph_custom("av3") # No
+coxph_custom("miord") # Yes
+coxph_custom("mitype") # Yes
+coxph_custom("year") # Yes
+coxph_custom("los") # No
+coxph_custom("dstat") # Yes
+
+# stratified KM for significant categorical variables
+km_custom("gender")
+km_custom("afb")
+km_custom("sho")
+km_custom("chf")
+km_custom("miord")
+km_custom("mitype")
+km_custom("year")
+
+```
+
+
+**Step 2. Fit a multivariable model and determine which covariates might be deleted from the model.**
+
+```{r}
+model1 <- coxph(Surv(lenfol, fstat)~ age + factor(gender) + hr + sysbp + diasbp + bmi + factor(afb) + factor(sho) + factor(chf) +
+                  factor(miord) + factor(mitype) + factor(year),
+                data=whas500)
+summary(model1)
+```
+
+
+**Step 3. Assess whether removal of covariates has produced an important change in the remaining coefficients.**
+
+Include covariates with a p-value less than 0.3 and eliminate from there.
+
+```{r}
+model2 <- coxph(Surv(lenfol, fstat)~ age + bmi + hr + factor(gender) + diasbp + factor(sho) + factor(chf) + factor(mitype)
+                + factor(year),
+                data=whas500)
+summary(model2)
+
+# exclude year, even though year=3 is significant, because I feel it would not make sense to exclude year 2 but include year 3
+model3 <- coxph(Surv(lenfol, fstat)~ age + bmi + hr + factor(gender) + diasbp + factor(sho) + factor(chf) + factor(mitype),
+                data=whas500)
+summary(model3)
+
+# exclude mitype
+model4 <- coxph(Surv(lenfol, fstat)~ age + bmi + hr + diasbp + factor(sho) + factor(chf) + factor(gender),
+                data=whas500)
+summary(model4)
+```
+
+
+**Step 4. Finalize the preliminary main effects model.**
+
+```{r}
+model4 <- coxph(Surv(lenfol, fstat)~ age + bmi + hr + diasbp + factor(sho) + factor(chf) + factor(gender),
+                data=whas500)
+summary(model4)
+```
+
+
+**Step 5. Use residual diagnostics to examine the scale of continuous covariates in the preliminary main effects model.**
+
+Martingale and deviance residuals look randomly scattered, which is what we want. 
+
+```{r}
+residual_plot_custom <- function(model, data, variable, type = "martingale") {
+  martinres <- residuals(model, type = type)
+  
+  plot(
+    x = data[[variable]],
+    y = martinres,
+    xlab = variable,
+    ylab = paste("Residual Type: ", type)
+  )
+  
+  lines(
+    lowess(x = data[[variable]], y = martinres),
+    lty = 2,
+    col = "red"
+  )
+  
+  abline(h = 0)
+}
+
+residual_plot_custom(model4, whas500, "age")
+residual_plot_custom(model4, whas500, "bmi")
+residual_plot_custom(model4, whas500, "hr")
+residual_plot_custom(model4, whas500, "diasbp")
+
+residual_plot_custom(model4, whas500, "age", type="deviance")
+residual_plot_custom(model4, whas500, "bmi", type="deviance")
+residual_plot_custom(model4, whas500, "hr", type="deviance")
+residual_plot_custom(model4, whas500, "diasbp", type="deviance")
+
+```
+
+
+**Step 6. Test for interactions.**
+
+```{r}
+model5 <- coxph(Surv(lenfol, fstat)~ age + bmi + hr + diasbp + factor(sho) + factor(chf) + factor(gender) + age*factor(gender),
+                data=whas500)
+summary(model5)
+
+library(lmtest)
+lrtest(model4, model5)
+```
+
+
+**Step 7. Check proportional hazards, overall goodness of fit, and for influential observations.**
+
+None of the covariates have scaled Schoenfeld residuals with a statistically significant non-zero slope EXCEPT for `sho` aka Cardiogenic Shock. Hazard ratio of cardiogenic shock is not constant over time. We thus adjust by stratifying on cardiogenic shock.
+
+```{r}
+extractAIC(model5)
+
+scaledres <- residuals(model5,type="scaledsch")
+cox.zph(model5)
+plot(cox.zph(model5))
+
+model6 <- coxph(Surv(lenfol, fstat)~ age + bmi + hr + diasbp + strata(factor(sho)) + factor(chf) + factor(gender) + age*factor(gender),
+                data=whas500)
+summary(model6)
+
+```
+
+
+
+#### *End of practice session*
+
