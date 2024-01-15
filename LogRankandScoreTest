@@ -1,0 +1,58 @@
+To present the relationship between the score test in a Cox proportional hazards model and the log-rank test as a mathematical proof, especially for the case of a single binary covariate \( Z \), we'll follow a structured approach. The proof will demonstrate that under the null hypothesis, the score test statistic in this specific context is mathematically equivalent to the log-rank statistic.
+
+### Assumptions:
+
+1. **Cox Proportional Hazards Model**:
+   \[ h(t, Z) = h_0(t) \exp(\beta Z) \]
+   where \( h(t, Z) \) is the hazard function at time \( t \) for a subject with covariate \( Z \), \( h_0(t) \) is the baseline hazard function, and \( \beta \) is the coefficient for the covariate \( Z \).
+
+2. **Binary Covariate**: 
+   \( Z \) takes the value 0 or 1.
+
+3. **Null Hypothesis**:
+   \[ H_0: \beta = 0 \]
+   implying \( h(t, Z) = h_0(t) \) for all subjects.
+
+### Score Test:
+
+The score \( U(\beta) \) at \( \beta = 0 \) is given by:
+\[ U(\beta) = \sum_{i: \text{events}} \left[ Z_i - \hat{E}(Z|t_i) \right] \]
+where \( Z_i \) is the covariate value for the individual who fails at time \( t_i \), and \( \hat{E}(Z|t_i) \) is the expected value of \( Z \) for individuals at risk at time \( t_i \).
+
+### Simplification for Binary Covariate:
+
+1. When \( Z \) is binary, \( \hat{E}(Z|t_i) \) is the proportion of individuals at risk at time \( t_i \) who have \( Z = 1 \).
+2. Therefore, the score statistic is a sum over the differences between the observed number of events in the \( Z = 1 \) group and the expected number of events in this group, at each event time:
+   \[ U(\beta) = \sum_{i: \text{events}} \left[ O_1(t_i) - E_1(t_i) \right] \]
+   where \( O_1(t_i) \) is the observed number of events in the \( Z = 1 \) group at time \( t_i \), and \( E_1(t_i) \) is the expected number under the null hypothesis.
+
+### Log-Rank Test:
+
+The log-rank statistic is:
+\[ LR = \sum_{i: \text{events}} \frac{(O_1(t_i) - E_1(t_i))}{\sqrt{V(t_i)}} \]
+where \( V(t_i) \) is the variance of \( O_1(t_i) \).
+
+### Proof of Equivalence:
+
+1. Under \( H_0 \), the score test simplifies to:
+   \[ U(0) = \sum_{i: \text{events}} \left[ O_1(t_i) - E_1(t_i) \right] \]
+
+2. The log-rank test statistic is the same sum, with each term normalized by its variance:
+   \
+
+\[ LR = \sum_{i: \text{events}} \frac{(O_1(t_i) - E_1(t_i))}{\sqrt{V(t_i)}} \]
+
+3. Under the null hypothesis and for large sample sizes, the central limit theorem implies that the variance \( V(t_i) \) stabilizes and can be approximated. For a binary covariate, this variance can be expressed as:
+   \[ V(t_i) = \frac{O_1(t_i)(N(t_i) - O_1(t_i))}{N(t_i)^2(N(t_i) - 1)} \]
+   where \( N(t_i) \) is the total number of individuals at risk at time \( t_i \).
+
+4. For the log-rank test, if we assume that the number of individuals at risk \( N(t_i) \) is large, then \( V(t_i) \) simplifies, and the normalization by \( \sqrt{V(t_i)} \) becomes a constant factor for each term in the sum. In other words, when \( N(t_i) \) is large, the normalization does not affect the rank ordering of the summands or the overall significance of the test.
+
+5. Therefore, for large sample sizes, the log-rank statistic and the score statistic are effectively equivalent, as the normalization factor in the log-rank statistic becomes constant across all terms:
+   \[ LR \approx \sum_{i: \text{events}} (O_1(t_i) - E_1(t_i)) = U(0) \]
+
+6. Both statistics under the null hypothesis follow a chi-square distribution with 1 degree of freedom. The decision to reject or not reject the null hypothesis based on these statistics will be the same, confirming their equivalence in this specific context.
+
+### Conclusion:
+
+In the special case of a single binary covariate \( Z \), the score test for the Cox proportional hazards model reduces to the log-rank test. This equivalence highlights the intrinsic link between these two methods in assessing the effect of a binary covariate on survival times, particularly in large-sample scenarios where the Cox model's assumptions are satisfied.
